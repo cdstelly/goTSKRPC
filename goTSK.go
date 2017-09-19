@@ -6,6 +6,7 @@ import (
 	"net"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type NugArg struct {
@@ -16,9 +17,19 @@ type NugTSK struct {
 	SavedData []byte
 }
 
-func (nd *NugTSK) LoadDataTSK(dataArg *NugArg, reply *string) error {
+func (nd *NugTSK) GetDataLen(dataArg *NugArg, reply *string) error {
+	*reply = strconv.Itoa(len(nd.SavedData))
+	return nil
+}
+
+func (nd *NugTSK) LoadData(dataArg *NugArg, reply *string) error {
 	nd.SavedData = dataArg.TheData
 	*reply = "done"
+	return nil
+}
+
+func (nd *NugTSK) ExecInfo(dataArg *NugArg, reply *string) error {
+	*reply = "test"
 	return nil
 }
 

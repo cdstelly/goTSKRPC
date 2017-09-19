@@ -19,8 +19,10 @@ RUN ./configure --prefix=/usr/
 RUN make
 RUN make install
 
-
 VOLUME /data
 WORKDIR /data
 
-CMD /bin/bash
+ADD goTSK /usr/bin/goTSK
+
+# CMD /bin/bash
+CMD /usr/bin/goTSK
