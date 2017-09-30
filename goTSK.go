@@ -55,6 +55,23 @@ func (nd *NugTSK) ExecImageInfo(dataArg *NugArg, reply *string) error {
 	return err
 }
 
+func (nd *NugTSK) GetBodyFile(dataArg *NugArg, reply *string) error {
+	pathToExiftool := "/usr/bin/fls"
+	
+	cmd := exec.Command(pathToExiftool, "-rm", "/", "-o", "63", nd.PathToImage)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+
+	err := cmd.Run()
+	fmt.Println(out.String())
+	*reply = out.String()
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	return err
+}
+
 func main() {
 	fmt.Println("started")
 	tsk := new(NugTSK)
