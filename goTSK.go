@@ -9,11 +9,15 @@ import (
 	"strconv"
 	"os/exec"
 	"bytes"
+	b64 "encoding/base64"
+	"os"
+	"io/ioutil"
 )
 
 
 type NugArg struct {
 	TheData []byte
+	Inode string
 }
 
 type NugTSK struct {
@@ -57,7 +61,7 @@ func (nd *NugTSK) ExecImageInfo(dataArg *NugArg, reply *string) error {
 
 func (nd *NugTSK) GetBodyFile(dataArg *NugArg, reply *string) error {
 	pathToExiftool := "/usr/bin/fls"
-	
+
 	cmd := exec.Command(pathToExiftool, "-rm", "/", "-o", "63", nd.PathToImage)
 	var out bytes.Buffer
 	cmd.Stdout = &out
@@ -66,6 +70,37 @@ func (nd *NugTSK) GetBodyFile(dataArg *NugArg, reply *string) error {
 	fmt.Println(out.String())
 	*reply = out.String()
 
+	if err != nil {
+		fmt.Println(err)
+	}
+	return err
+}
+
+
+func (nd *NugTSK) GetFileData(dataArg *NugArg, reply *string) error {
+	pathToExiftool := "/usr/bin/icat"
+
+	cmd := exec.Command(pathToExiftool, "-o", "63", nd.PathToImage,  dataArg.Inode)
+outfile, err := os.Create("/space/out")
+	if err != nil {
+		panic(err)
+	}
+	defer outfile.Close()
+	cmd.Stdout = outfile
+
+	err = cmd.Start(); if err != nil {
+		panic(err)
+	}
+	cmd.Wait()
+
+	filedata, err := ioutil.ReadFile("/space/out")
+	if err != nil {
+		panic(err)
+	}
+
+
+	sEnc := b64.StdEncoding.EncodeToString(filedata)
+	*reply = sEnc
 	if err != nil {
 		fmt.Println(err)
 	}
