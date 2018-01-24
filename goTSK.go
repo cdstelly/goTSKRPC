@@ -67,7 +67,7 @@ func (nd *NugTSK) GetBodyFile(dataArg *NugArg, reply *string) error {
 	cmd.Stdout = &out
 
 	err := cmd.Run()
-	fmt.Println(out.String())
+	//fmt.Println(out.String())
 	*reply = out.String()
 
 	if err != nil {

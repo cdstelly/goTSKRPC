@@ -19,10 +19,16 @@ RUN ./configure --prefix=/usr/
 RUN make
 RUN make install
 
-VOLUME /data
-WORKDIR /data
 
-ADD goTSK /usr/bin/goTSK
+ADD goTSK.go /usr/local/src/goTSK.go
+RUN apt update
+RUN apt install -y golang-go
+WORKDIR /usr/bin/
+RUN go build /usr/local/src/goTSK.go
+
+# ADD goTSK /usr/bin/goTSK
 
 # CMD /bin/bash
+VOLUME /data
+WORKDIR /data
 CMD /usr/bin/goTSK
